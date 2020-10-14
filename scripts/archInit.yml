@@ -1,0 +1,33 @@
+---
+- name: Base Configuration for Arch
+  hosts: all
+  become: true
+  tasks:
+    - name: Initialize Pacman Keyring
+      shell: pacman-key --init
+      # become: true
+
+    - name: Populate Pacman Keyring
+      shell: pacman-key --populate archlinux
+
+    - name: Install Vim
+      package:
+        name: vim
+        state: present
+      # become: true
+
+    # Need to modify pacman.conf for below to function
+    # - name: Install Compiz Desktop Environment
+    #   package:
+    #     name: compiz
+    #     state: present
+    #   # become: true 
+
+    - name: set xinet to load i3
+      shell: echo 'exec i3' > /home/vagrant/.xinitrc
+
+    - name: configure a development user
+      user:
+        name: jay
+        password: "{{ 'temp' | password_hash('sha512', 'mypermsalt') }}"
+        shell: /bin/bash
